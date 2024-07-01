@@ -1,6 +1,6 @@
 <template>
   <footer>
-    <p>Projectname v0.1</p>
+    <p>Sca v0.1</p>
   </footer>
 </template>
 

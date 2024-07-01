@@ -152,7 +152,7 @@ export default {
   methods: {
     async fetchProjectData() {
       try {
-        const response = await fetch(`http://113.198.229.153:107/api/project/2/code`); //${this.repoName}
+        const response = await fetch(`http://113.198.229.153:107/api/project/${this.repoName}/code`);
         if (!response.ok) {
           throw new Error('Failed to fetch project data');
         }

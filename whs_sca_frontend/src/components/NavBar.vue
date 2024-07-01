@@ -4,7 +4,7 @@
       <div class="logo-container">
         <router-link to="/" class="logo-link">
           <img src="@/assets/logo.png" alt="Logo" class="logo">
-          <span class="project-name">ProjectName</span>
+          <span class="project-name">Sca</span>
         </router-link>
       </div>
       <hr class="divider">

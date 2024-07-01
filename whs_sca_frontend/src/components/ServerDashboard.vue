@@ -81,7 +81,7 @@ export default {
   methods: {
     async fetchProjectData(page = this.currentPage) {
       try {
-        const projectId = 2//this.$route.params.repoName;
+        const projectId = this.$route.params.repoName;
         const response = await fetch(`http://113.198.229.153:107/api/project/${projectId}/server?page=${page}&cnt_per_page=${this.itemsPerPage}`);
         if (!response.ok) {
           throw new Error('Failed to fetch project data');
