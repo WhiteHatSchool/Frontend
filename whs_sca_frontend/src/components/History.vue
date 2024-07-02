@@ -4,10 +4,10 @@
       <h1>History</h1>
       <div class="project-list-wrapper">
         <ul class="project-list">
-          <li v-for="project in projects" :key="project.id" @click="goToHistory2(project.name)">
+          <li v-for="project in projects" :key="project.id" @click="goToHistory2(project.id)">
             <div class="project-card">
               <div class="project-name"><strong>{{ project.name }}</strong></div>
-              <div class="project-date">Last analyzed on {{ project.lastAnalyzed }}</div>
+              <div class="project-date">Last analyzed on {{ project.date }}</div>
             </div>
           </li>
         </ul>
@@ -32,13 +32,13 @@ export default {
           throw new Error('Failed to fetch projects');
         }
         const data = await response.json();
-        this.projects = data.projects;
+        this.projects = data.projects.reverse();  // 역순으로 정렬
       } catch (error) {
         console.error('Error fetching projects:', error);
       }
     },
-    goToHistory2(projectName) {
-      this.$router.push({ name: 'History2', params: { projectName } });
+    goToHistory2(projectId) {
+      this.$router.push({ name: 'History2', params: { projectId } });
     }
   },
   created() {

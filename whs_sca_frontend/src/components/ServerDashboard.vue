@@ -2,8 +2,8 @@
   <div class="dashboard">
     <h1>{{ project.name }}</h1>
     <div class="tab-menu">
-      <router-link :to="{ name: 'CodeDashboard', params: { repoName: repoName } }" class="tab" :class="{ active: $route.name === 'CodeDashboard' }">Code</router-link>
-      <router-link :to="{ name: 'ServerDashboard', params: { repoName: repoName } }" class="tab" :class="{ active: $route.name === 'ServerDashboard' }">Server</router-link>
+      <router-link :to="{ name: 'CodeDashboard', params: { repoId: repoId } }" class="tab" :class="{ active: $route.name === 'CodeDashboard' }">Code</router-link>
+      <router-link :to="{ name: 'ServerDashboard', params: { repoId: repoId } }" class="tab" :class="{ active: $route.name === 'ServerDashboard' }">Server</router-link>
     </div>
     <div class="content">
       <div class="vulnerability-board">
@@ -36,7 +36,7 @@
 <script>
 export default {
   name: 'ServerDashboard',
-  props: ['repoName'],
+  props: ['repoId'],
   data() {
     return {
       project: {
@@ -79,33 +79,33 @@ export default {
     }
   },
   methods: {
-    async fetchProjectData(page = this.currentPage) {
+    async fetchProjectData() {
       try {
-        const projectId = this.$route.params.repoName;
-        const response = await fetch(`http://113.198.229.153:107/api/project/${projectId}/server?page=${page}&cnt_per_page=${this.itemsPerPage}`);
+        const response = await fetch(`http://113.198.229.153:107/api/project/${this.repoId}/server`);
         if (!response.ok) {
           throw new Error('Failed to fetch project data');
         }
         const data = await response.json();
+        console.log('Fetched data:', data); // API 응답 데이터를 콘솔에 출력
         this.project.name = data.name;
         this.project.vulnerabilities = data.findings;
-        this.currentPage = page;
+        console.log('Vulnerabilities:', this.project.vulnerabilities); // vulnerabilities 데이터 확인
       } catch (error) {
         console.error('Error fetching project data:', error);
       }
     },
     setPage(page) {
       if (page === '...') return;
-      this.fetchProjectData(page);
+      this.currentPage = page;
     },
     prevPage() {
       if (this.currentPage > 1) {
-        this.fetchProjectData(this.currentPage - 1);
+        this.currentPage--;
       }
     },
     nextPage() {
       if (this.currentPage < this.totalPages) {
-        this.fetchProjectData(this.currentPage + 1);
+        this.currentPage++;
       }
     }
   },
@@ -116,6 +116,7 @@ export default {
 </script>
 
 <style scoped>
+/* 기존 CSS 코드 그대로 유지 */
 .dashboard {
   padding: 20px;
   box-sizing: border-box;
@@ -133,7 +134,7 @@ h1 {
 h1:after {
   content: "";
   display: block;
-  width: 50px; /* 구분선 길이 */
+  width: 50px;
   height: 2px;
   background: #2c3e50;
   margin: 10px auto 0;

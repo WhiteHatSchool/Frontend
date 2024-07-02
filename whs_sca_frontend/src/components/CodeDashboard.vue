@@ -2,8 +2,8 @@
   <div class="dashboard">
     <h1>{{ project.name }}</h1>
     <div class="tab-menu">
-      <router-link :to="{ name: 'CodeDashboard', params: { repoName: repoName } }" class="tab" :class="{ active: $route.name === 'CodeDashboard' }">Code</router-link>
-      <router-link :to="{ name: 'ServerDashboard', params: { repoName: repoName } }" class="tab" :class="{ active: $route.name === 'ServerDashboard' }">Server</router-link>
+      <router-link :to="{ name: 'CodeDashboard', params: { repoId: repoId } }" class="tab" :class="{ active: $route.name === 'CodeDashboard' }">Code</router-link>
+      <router-link :to="{ name: 'ServerDashboard', params: { repoId: repoId } }" class="tab" :class="{ active: $route.name === 'ServerDashboard' }">Server</router-link>
     </div>
     <div class="content">
       <div class="unused-list">
@@ -58,7 +58,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="component in project.dependency_list.before.vuln_lists" :key="component.component_name">
+                <tr v-for="component in project.dependency_list.before.vuln_lists" :key="component.component_name" @click="navigateTo(component.vulnerability_code)" class="clickable-row">
                   <td>{{ component.component_name }}</td>
                   <td>{{ component.ver }}</td>
                   <td><a :href="component.vulnerability_code">{{ component.vulnerability_code }}</a></td>
@@ -108,7 +108,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="component in project.dependency_list.after.vuln_lists" :key="component.component_name">
+                <tr v-for="component in project.dependency_list.after.vuln_lists" :key="component.component_name" @click="navigateTo(component.vulnerability_code)" class="clickable-row">
                   <td>{{ component.component_name }}</td>
                   <td>{{ component.ver }}</td>
                   <td><a :href="component.vulnerability_code">{{ component.vulnerability_code }}</a></td>
@@ -126,7 +126,7 @@
 <script>
 export default {
   name: 'CodeDashboard',
-  props: ['repoName'],
+  props: ['repoId'],
   data() {
     return {
       project: {
@@ -152,7 +152,7 @@ export default {
   methods: {
     async fetchProjectData() {
       try {
-        const response = await fetch(`http://113.198.229.153:107/api/project/${this.repoName}/code`);
+        const response = await fetch(`http://113.198.229.153:107/api/project/${this.repoId}/code`);
         if (!response.ok) {
           throw new Error('Failed to fetch project data');
         }
@@ -164,6 +164,9 @@ export default {
     },
     countSeverity(vulnLists, severity) {
       return vulnLists.filter(vul => vul.severity === severity).length;
+    },
+    navigateTo(url) {
+      window.open(url, '_blank');
     }
   }
 };
@@ -187,7 +190,7 @@ h1 {
 h1:after {
   content: "";
   display: block;
-  width: 50px; /* 구분선 길이 */
+  width: 50px;
   height: 2px;
   background: #2c3e50;
   margin: 10px auto 0;
@@ -359,7 +362,8 @@ textarea {
   text-decoration: underline;
 }
 
-h3 {
-  text-align: center;
+.dependency-table .clickable-row:hover {
+  background-color: #ecf0f1;
+  cursor: pointer;
 }
 </style>

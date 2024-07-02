@@ -2,7 +2,7 @@
   <div class="repository">
     <h1>Project</h1>
     <div class="repo-list">
-      <div class="repo-card" v-for="repo in repos" :key="repo.id" @click="goToCodeDashboard(repo.name)">
+      <div class="repo-card" v-for="repo in repos" :key="repo.id" @click="goToCodeDashboard(repo.id)">
         <div class="repo-info">
           <h2>{{ repo.name }}</h2>
           <p>ver. {{ repo.version }}</p>
@@ -13,7 +13,7 @@
     <div class="pagination">
       <button @click="prevPage" :disabled="currentPage === 1">&lt;</button>
       <button
-        v-for="page in paginationPages"
+        v-for="page in totalPages"
         :key="page"
         @click="goToPage(page)"
         :class="{ active: page === currentPage }"
@@ -39,29 +39,6 @@ export default {
   created() {
     this.fetchProjects();
   },
-  computed: {
-    paginationPages() {
-      const pages = [];
-      const startPage = Math.max(1, this.currentPage - 2);
-      const endPage = Math.min(this.totalPages, this.currentPage + 2);
-
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-
-      if (startPage > 1) {
-        pages.unshift(1);
-        if (startPage > 2) pages.splice(1, 0, '...');
-      }
-
-      if (endPage < this.totalPages) {
-        pages.push(this.totalPages);
-        if (endPage < this.totalPages - 1) pages.splice(pages.length - 1, 0, '...');
-      }
-
-      return pages;
-    }
-  },
   methods: {
     async fetchProjects() {
       console.log(`Fetching projects for page ${this.currentPage}`);
@@ -72,14 +49,14 @@ export default {
         }
         const data = await response.json();
         console.log('Fetched data:', data);
-        this.repos = data.projects;
+        this.repos = data.projects.reverse();  // 역순으로 정렬
         this.totalPages = data.sum_of_page;
       } catch (error) {
         console.error('Error fetching projects:', error);
       }
     },
-    goToCodeDashboard(repoName) {
-      this.$router.push({ name: 'CodeDashboard', params: { repoName } });
+    goToCodeDashboard(repoId) {
+      this.$router.push({ name: 'CodeDashboard', params: { repoId } });
     },
     prevPage() {
       if (this.currentPage > 1) {
@@ -94,7 +71,6 @@ export default {
       }
     },
     goToPage(page) {
-      if (page === '...') return;
       console.log(`Navigating to page ${page}`);
       this.currentPage = page;
       this.fetchProjects();

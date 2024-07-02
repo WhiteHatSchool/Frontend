@@ -54,11 +54,10 @@
 
 <script>
 import { Line, Chart } from 'chart.js';
-import { onMounted } from 'vue';
 
 export default {
   name: 'History2',
-  props: ['projectName'],
+  props: ['projectId'],
   data() {
     return {
       project: {},
@@ -72,7 +71,7 @@ export default {
   methods: {
     async fetchProjectData() {
       try {
-        const response = await fetch(`http://113.198.229.153:107/api/project/${this.projectName}/history`);
+        const response = await fetch(`http://113.198.229.153:107/api/project/${this.projectId}/history`);
         if (!response.ok) {
           throw new Error('Failed to fetch project data');
         }
@@ -198,7 +197,7 @@ h1:after {
 
 canvas {
   margin-bottom: 20px;
-  height: 100px !important; /* 그래프 세로 길이를 줄이기 */
+  height: 400px !important; /* 그래프 세로 길이를 줄이기 */
 }
 
 .info-title {
