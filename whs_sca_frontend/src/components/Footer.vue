@@ -14,7 +14,7 @@ export default {
 footer {
   text-align: right;
   color: #2c3e50;
-  padding: 5px 20px 5px 0; /* Add right padding */
+  padding: 5px 20px 5px 0;
   position: fixed;
   bottom: 0;
   width: calc(100% - 250px);

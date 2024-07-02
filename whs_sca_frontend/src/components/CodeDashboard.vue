@@ -62,7 +62,7 @@
                   <td>{{ component.component_name }}</td>
                   <td>{{ component.ver }}</td>
                   <td><a :href="component.vulnerability_code">{{ component.vulnerability_code }}</a></td>
-                  <td>{{ component.severity }}</td>
+                  <td :class="severityClass(component.severity)">{{ component.severity }}</td>
                 </tr>
               </tbody>
             </table>
@@ -112,7 +112,7 @@
                   <td>{{ component.component_name }}</td>
                   <td>{{ component.ver }}</td>
                   <td><a :href="component.vulnerability_code">{{ component.vulnerability_code }}</a></td>
-                  <td>{{ component.severity }}</td>
+                  <td :class="severityClass(component.severity)">{{ component.severity }}</td>
                 </tr>
               </tbody>
             </table>
@@ -167,6 +167,15 @@ export default {
     },
     navigateTo(url) {
       window.open(url, '_blank');
+    },
+    severityClass(severity) {
+      return {
+        'critical': severity === 'Critical',
+        'high': severity === 'High',
+        'medium': severity === 'Medium',
+        'low': severity === 'Low',
+        'unassigned': severity === 'Unassigned'
+      };
     }
   }
 };
@@ -275,7 +284,7 @@ textarea {
   align-items: center;
   padding: 10px;
   border-radius: 5px;
-  width: calc(100% / 2 - 10px); /* 가로 길이 통일 */
+  width: calc(100% / 2 - 10px);
   text-align: center;
 }
 
@@ -317,23 +326,23 @@ textarea {
 }
 
 .critical {
-  color: #ff4d4d; /* 붉은색 */
+  color: #ff4d4d;
 }
 
 .high {
-  color: #ffa500; /* 주황색 */
+  color: #ffa500;
 }
 
 .medium {
-  color: #ffd700; /* 황금색 */
+  color: #ffd700;
 }
 
 .low {
-  color: #9370db; /* 파란색 */
+  color: #9370db;
 }
 
 .unassigned {
-  color: #32cd32; /* 초록색 */
+  color: #32cd32;
 }
 
 .dependency-table {
@@ -365,5 +374,25 @@ textarea {
 .dependency-table .clickable-row:hover {
   background-color: #ecf0f1;
   cursor: pointer;
+}
+
+.dependency-table td.critical {
+  color: #ff4d4d;
+}
+
+.dependency-table td.high {
+  color: #ffa500;
+}
+
+.dependency-table td.medium {
+  color: #ffd700;
+}
+
+.dependency-table td.low {
+  color: #9370db;
+}
+
+.dependency-table td.unassigned {
+  color: #32cd32;
 }
 </style>

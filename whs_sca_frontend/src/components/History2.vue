@@ -88,7 +88,7 @@ export default {
             unassigned: version.vuln.vuln_lists.filter(vuln => vuln.severity === 'Unassigned').length,
           }))
         };
-        this.previousVersions = this.project.previousVersions.reverse();
+        this.previousVersions = this.project.previousVersions;
         this.mostRecentVersion = this.previousVersions[0];
         this.renderChart();
       } catch (error) {
@@ -143,7 +143,7 @@ export default {
             },
             y: {
               beginAtZero: true,
-              suggestedMin: 0 // 0 이하 값 없애기
+              suggestedMin: 0
             }
           }
         }
@@ -189,15 +189,15 @@ h1:after {
   flex-direction: column;
   align-items: center;
   background-color: #ffffff;
-  border: 2px solid #2c3e50; /* 테두리 색상 설정 */
-  border-radius: 10px; /* 둥근 모서리 설정 */
-  padding: 20px; /* 내부 여백 설정 */
-  position: relative; /* 그래프 위치를 위해 추가 */
+  border: 2px solid #2c3e50;
+  border-radius: 10px; 
+  padding: 20px;
+  position: relative;
 }
 
 canvas {
   margin-bottom: 20px;
-  height: 400px !important; /* 그래프 세로 길이를 줄이기 */
+  height: 400px !important;
 }
 
 .info-title {
@@ -218,37 +218,37 @@ canvas {
   text-align: center;
   flex-grow: 1;
   margin: 5px;
-  background-color: #2c3e50; /* 모든 박스의 배경색 설정 */
+  background-color: #2c3e50;
   color: white;
-  width: calc(100% / 5 - 20px); /* 가로 길이 통일 */
+  width: calc(100% / 5 - 20px);
 }
 
 .critical, .high, .medium, .low, .unassigned {
-  font-size: 1.0em; /* 글씨 크기 줄이기 */
+  font-size: 1.0em;
 }
 
 .percentage {
-  font-size: 0.8em; /* 퍼센트 글씨 크기 줄이기 */
+  font-size: 0.8em;
 }
 
 .critical {
-  color: #ff4d4d; /* 붉은색 */
+  color: #ff4d4d;
 }
 
 .high {
-  color: #ffa500; /* 주황색 */
+  color: #ffa500;
 }
 
 .medium {
-  color: #ffd700; /* 황금색 */
+  color: #ffd700;
 }
 
 .low {
-  color: #9370db; /* 파란색 */
+  color: #9370db;
 }
 
 .unassigned {
-  color: #32cd32; /* 초록색 */
+  color: #32cd32;
 }
 
 .previous-version {

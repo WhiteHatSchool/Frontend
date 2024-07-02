@@ -32,7 +32,7 @@ export default {
           throw new Error('Failed to fetch projects');
         }
         const data = await response.json();
-        this.projects = data.projects.reverse();  // 역순으로 정렬
+        this.projects = data.projects.reverse();
       } catch (error) {
         console.error('Error fetching projects:', error);
       }

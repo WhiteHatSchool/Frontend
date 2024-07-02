@@ -87,7 +87,7 @@ export default {
 }
 
 .nav-link:hover {
-  background-color: #202C39; /* 어두운 배경색 */
-  transform: scale(1.05); /* 커지는 효과 */
+  background-color: #202C39;
+  transform: scale(1.05);
 }
 </style>

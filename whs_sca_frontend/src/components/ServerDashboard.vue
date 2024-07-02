@@ -86,10 +86,10 @@ export default {
           throw new Error('Failed to fetch project data');
         }
         const data = await response.json();
-        console.log('Fetched data:', data); // API 응답 데이터를 콘솔에 출력
+        console.log('Fetched data:', data);
         this.project.name = data.name;
         this.project.vulnerabilities = data.findings;
-        console.log('Vulnerabilities:', this.project.vulnerabilities); // vulnerabilities 데이터 확인
+        console.log('Vulnerabilities:', this.project.vulnerabilities);
       } catch (error) {
         console.error('Error fetching project data:', error);
       }
@@ -116,7 +116,6 @@ export default {
 </script>
 
 <style scoped>
-/* 기존 CSS 코드 그대로 유지 */
 .dashboard {
   padding: 20px;
   box-sizing: border-box;

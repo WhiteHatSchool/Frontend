@@ -49,7 +49,7 @@ export default {
         }
         const data = await response.json();
         console.log('Fetched data:', data);
-        this.repos = data.projects.reverse();  // 역순으로 정렬
+        this.repos = data.projects.reverse();
         this.totalPages = data.sum_of_page;
       } catch (error) {
         console.error('Error fetching projects:', error);
@@ -81,7 +81,7 @@ export default {
 
 <style scoped>
 body {
-  background-color: #ecf0f1; /* 배경색 설정 */
+  background-color: #ecf0f1;
 }
 
 .repository {
@@ -99,7 +99,7 @@ h1 {
 h1:after {
   content: "";
   display: block;
-  width: 50px; /* 구분선 길이 */
+  width: 50px;
   height: 2px;
   background: #2c3e50;
   margin: 10px auto 0;
@@ -108,7 +108,7 @@ h1:after {
 .repo-list {
   display: flex;
   flex-direction: column;
-  align-items: center; /* 중앙 정렬 */
+  align-items: center;
 }
 
 .repo-card {
@@ -120,10 +120,10 @@ h1:after {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%; /* 가로 길이 설정 */
-  max-width: 850px; /* 최대 너비 설정 */
+  width: 100%;
+  max-width: 850px;
   transition: background-color 0.3s ease, transform 0.3s ease;
-  cursor: pointer; /* 클릭 커서 설정 */
+  cursor: pointer;
 }
 
 .repo-card:hover {
@@ -138,16 +138,16 @@ h1:after {
 
 .repo-info h2 {
   margin: 0;
-  color: #2c3e50; /* 글씨색 변경 */
+  color: #2c3e50;
 }
 
 .repo-info p {
   margin: 0;
-  color: #7f8c8d; /* 버전 글씨색 변경 */
+  color: #7f8c8d;
 }
 
 .repo-date {
-  color: #bdc3c7; /* 날짜 글씨색 변경 */
+  color: #bdc3c7;
 }
 
 .pagination {
