@@ -27,7 +27,7 @@ export default {
   methods: {
     async fetchProjects() {
       try {
-        const response = await fetch(`http://13.113.43.109:8000/api/project/`);
+        const response = await fetch(`http://43.201.110.185:8080/api/project/`);
         if (!response.ok) {
           throw new Error('Failed to fetch projects');
         }

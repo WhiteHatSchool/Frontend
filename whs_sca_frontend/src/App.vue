@@ -9,20 +9,18 @@
       </div>
     </div>
     <footer>
-      <p>Sca v0.1</p>
+      <p>WHSCA v1.0</p>
     </footer>
   </div>
 </template>
 
 <script>
 import NavBar from './components/NavBar.vue';
-import Footer from './components/Footer.vue';
 
 export default {
   name: 'App',
   components: {
-    NavBar,
-    Footer
+    NavBar
   }
 };
 </script>
@@ -62,7 +60,7 @@ footer {
   position: fixed;
   bottom: 0;
   width: calc(100% - 250px);
-  left: 250px;
+  right: 30px;
   background-color: transparent;
 }
 </style>
