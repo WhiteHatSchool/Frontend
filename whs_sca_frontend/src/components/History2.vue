@@ -71,7 +71,7 @@ export default {
   methods: {
     async fetchProjectData() {
       try {
-        const response = await fetch(`http://43.201.110.185:8080/api/project/${this.projectId}/history`);
+        const response = await fetch(`http://43.201.110.185:8000/api/project/${this.projectId}/history`);
         if (!response.ok) {
           throw new Error('Failed to fetch project data');
         }

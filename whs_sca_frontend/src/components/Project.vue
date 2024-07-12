@@ -43,7 +43,7 @@ export default {
     async fetchProjects() {
       console.log(`Fetching projects for page ${this.currentPage}`);
       try {
-        const response = await fetch(`http://43.201.110.185:8080/api/project/?page=${this.currentPage}&cnt_per_page=${this.itemsPerPage}`);
+        const response = await fetch(`http://43.201.110.185:8000/api/project/?page=${this.currentPage}&cnt_per_page=${this.itemsPerPage}`);
         if (!response.ok) {
           throw new Error('Failed to fetch projects');
         }
