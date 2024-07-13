@@ -18,9 +18,13 @@
             <div class="vulnerability-cell">{{ vulnerability.title }}</div>
             <div class="vulnerability-cell">{{ vulnerability.description }}</div>
             <div class="vulnerability-cell">
-              <div v-for="pkg in vulnerability.affectedPackages" :key="pkg">{{ pkg }}</div>
+              <div class="affected-package" v-for="pkg in vulnerability.affectedPackages" :key="pkg">{{ pkg }}</div>
             </div>
-            <div class="vulnerability-cell">{{ vulnerability.recommendation }}</div>
+            <div class="vulnerability-cell">
+              <div v-for="link in parseLinks(vulnerability.recommendation)" :key="link" class="recommendation-link">
+                <a :href="link" target="_blank">{{ link }}</a>
+              </div>
+            </div>
           </div>
         </div>
         <div class="pagination">
@@ -107,6 +111,15 @@ export default {
       if (this.currentPage < this.totalPages) {
         this.currentPage++;
       }
+    },
+    parseLinks(recommendation) {
+      const regex = /\[([^\]]+)\]\([^\)]+\)/g;
+      let matches;
+      const links = [];
+      while ((matches = regex.exec(recommendation)) !== null) {
+        links.push(matches[1]);
+      }
+      return links;
     }
   },
   created() {
@@ -191,6 +204,17 @@ h1:after {
 .vulnerability-cell {
   flex: 1;
   padding: 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recommendation-link a {
+  display: block;
+}
+
+.affected-package {
+  display: inline-block;
 }
 
 .pagination {

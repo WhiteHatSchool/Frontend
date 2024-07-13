@@ -1,121 +1,126 @@
 <template>
   <div class="dashboard">
     <h1>{{ project.name }}</h1>
-    <div class="tab-menu">
-      <router-link :to="{ name: 'CodeDashboard', params: { repoId: repoId } }" class="tab" :class="{ active: $route.name === 'CodeDashboard' }">Code</router-link>
-      <router-link :to="{ name: 'ServerDashboard', params: { repoId: repoId } }" class="tab" :class="{ active: $route.name === 'ServerDashboard' }">Server</router-link>
+    <div v-if="loading" class="loading">
+      Loading...
     </div>
-    <div class="content">
-      <div class="unused-list">
-        <h2>Unused Import List</h2>
-        <textarea readonly>{{ project.unused_import_list.join('\n') }}</textarea>
+    <div v-else>
+      <div class="tab-menu">
+        <router-link :to="{ name: 'CodeDashboard', params: { repoId: repoId } }" class="tab" :class="{ active: $route.name === 'CodeDashboard' }">Code</router-link>
+        <router-link :to="{ name: 'ServerDashboard', params: { repoId: repoId } }" class="tab" :class="{ active: $route.name === 'ServerDashboard' }">Server</router-link>
       </div>
-      <div class="unused-list">
-        <h2>Unused Package</h2>
-        <textarea readonly>{{ project.unused_package.join('\n') }}</textarea>
-      </div>
-      <div class="dependency-list">
-        <h2>Dependency List</h2>
-        <div class="dependency">
-          <div class="dependency-section existing-code">
-            <h3>Existing Code</h3>
-            <div class="status">
-              <div class="status-header">
-                <div class="status-box">
-                  <span class="vuln-title">Vulnerability</span>
-                  <span class="vuln-value">{{ project.dependency_list.before.vuln_lists.length }}</span>
+      <div class="content">
+        <div class="unused-list">
+          <h2>Unused Dependency List</h2>
+          <textarea readonly>{{ project.unused_import_list.join('\n') }}</textarea>
+        </div>
+        <div class="unused-list">
+          <h2>Unused Package</h2>
+          <textarea readonly>{{ project.unused_package.join('\n') }}</textarea>
+        </div>
+        <div class="dependency-list">
+          <h2>Dependency List</h2>
+          <div class="dependency">
+            <div class="dependency-section existing-code">
+              <h3>Existing Code</h3>
+              <div class="status">
+                <div class="status-header">
+                  <div class="status-box">
+                    <span class="vuln-title">Vulnerability</span>
+                    <span class="vuln-value">{{ project.dependency_list.before.vuln_lists.length }}</span>
+                  </div>
+                  <div class="status-box">
+                    <span class="cvss-title">CVSS score</span>
+                    <span class="cvss-value">{{ project.dependency_list.before.cvss }}</span>
+                  </div>
                 </div>
-                <div class="status-box">
-                  <span class="cvss-title">CVSS score</span>
-                  <span class="cvss-value">{{ project.dependency_list.before.cvss }}</span>
+                <div class="severity-counts">
+                  <div class="severity-item">
+                    <div class="severity-box critical">critical<br>{{ countSeverity(project.dependency_list.before.vuln_lists, 'Critical') }}</div>
+                  </div>
+                  <div class="severity-item">
+                    <div class="severity-box high">high<br>{{ countSeverity(project.dependency_list.before.vuln_lists, 'High') }}</div>
+                  </div>
+                  <div class="severity-item">
+                    <div class="severity-box medium">medium<br>{{ countSeverity(project.dependency_list.before.vuln_lists, 'Medium') }}</div>
+                  </div>
+                  <div class="severity-item">
+                    <div class="severity-box low">low<br>{{ countSeverity(project.dependency_list.before.vuln_lists, 'Low') }}</div>
+                  </div>
+                  <div class="severity-item">
+                    <div class="severity-box unassigned">unassigned<br>{{ countSeverity(project.dependency_list.before.vuln_lists, 'Unassigned') }}</div>
+                  </div>
                 </div>
               </div>
-              <div class="severity-counts">
-                <div class="severity-item">
-                  <div class="severity-box critical">critical<br>{{ countSeverity(project.dependency_list.before.vuln_lists, 'Critical') }}</div>
-                </div>
-                <div class="severity-item">
-                  <div class="severity-box high">high<br>{{ countSeverity(project.dependency_list.before.vuln_lists, 'High') }}</div>
-                </div>
-                <div class="severity-item">
-                  <div class="severity-box medium">medium<br>{{ countSeverity(project.dependency_list.before.vuln_lists, 'Medium') }}</div>
-                </div>
-                <div class="severity-item">
-                  <div class="severity-box low">low<br>{{ countSeverity(project.dependency_list.before.vuln_lists, 'Low') }}</div>
-                </div>
-                <div class="severity-item">
-                  <div class="severity-box unassigned">unassigned<br>{{ countSeverity(project.dependency_list.before.vuln_lists, 'Unassigned') }}</div>
-                </div>
-              </div>
+              <table class="dependency-table">
+                <thead>
+                  <tr>
+                    <th>Components</th>
+                    <th>Version</th>
+                    <th>Vulnerability</th>
+                    <th>Severity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="component in project.dependency_list.before.vuln_lists" :key="component.component_name" @click="navigateToThirdLink(component.info_url)" class="clickable-row">
+                    <td>{{ component.component_name }}</td>
+                    <td>{{ component.ver }}</td>
+                    <td>{{ component.vulnerability_code }}</td>
+                    <td :class="severityClass(component.severity)">{{ component.severity }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <table class="dependency-table">
-              <thead>
-                <tr>
-                  <th>Components</th>
-                  <th>Version</th>
-                  <th>Vulnerability</th>
-                  <th>Severity</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="component in project.dependency_list.before.vuln_lists" :key="component.component_name" @click="navigateTo(component.vulnerability_code)" class="clickable-row">
-                  <td>{{ component.component_name }}</td>
-                  <td>{{ component.ver }}</td>
-                  <td><a :href="component.vulnerability_code">{{ component.vulnerability_code }}</a></td>
-                  <td :class="severityClass(component.severity)">{{ component.severity }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="dependency-section remaining-code">
-            <h3>Removing Unused Code</h3>
-            <div class="status">
-              <div class="status-header">
-                <div class="status-box">
-                  <span class="vuln-title">Vulnerability</span>
-                  <span class="vuln-value">{{ project.dependency_list.after.vuln_lists.length }}</span>
+            <div class="dependency-section remaining-code">
+              <h3>Removing Unused Code</h3>
+              <div class="status">
+                <div class="status-header">
+                  <div class="status-box">
+                    <span class="vuln-title">Vulnerability</span>
+                    <span class="vuln-value">{{ project.dependency_list.after.vuln_lists.length }}</span>
+                  </div>
+                  <div class="status-box">
+                    <span class="cvss-title">CVSS score</span>
+                    <span class="cvss-value">{{ project.dependency_list.after.cvss }}</span>
+                  </div>
                 </div>
-                <div class="status-box">
-                  <span class="cvss-title">CVSS score</span>
-                  <span class="cvss-value">{{ project.dependency_list.after.cvss }}</span>
-                </div>
-              </div>
-              <div class="severity-counts">
-                <div class="severity-item">
-                  <div class="severity-box critical">critical<br>{{ countSeverity(project.dependency_list.after.vuln_lists, 'Critical') }}</div>
-                </div>
-                <div class="severity-item">
-                  <div class="severity-box high">high<br>{{ countSeverity(project.dependency_list.after.vuln_lists, 'High') }}</div>
-                </div>
-                <div class="severity-item">
-                  <div class="severity-box medium">medium<br>{{ countSeverity(project.dependency_list.after.vuln_lists, 'Medium') }}</div>
-                </div>
-                <div class="severity-item">
-                  <div class="severity-box low">low<br>{{ countSeverity(project.dependency_list.after.vuln_lists, 'Low') }}</div>
-                </div>
-                <div class="severity-item">
-                  <div class="severity-box unassigned">unassigned<br>{{ countSeverity(project.dependency_list.after.vuln_lists, 'Unassigned') }}</div>
+                <div class="severity-counts">
+                  <div class="severity-item">
+                    <div class="severity-box critical">critical<br>{{ countSeverity(project.dependency_list.after.vuln_lists, 'Critical') }}</div>
+                  </div>
+                  <div class="severity-item">
+                    <div class="severity-box high">high<br>{{ countSeverity(project.dependency_list.after.vuln_lists, 'High') }}</div>
+                  </div>
+                  <div class="severity-item">
+                    <div class="severity-box medium">medium<br>{{ countSeverity(project.dependency_list.after.vuln_lists, 'Medium') }}</div>
+                  </div>
+                  <div class="severity-item">
+                    <div class="severity-box low">low<br>{{ countSeverity(project.dependency_list.after.vuln_lists, 'Low') }}</div>
+                  </div>
+                  <div class="severity-item">
+                    <div class="severity-box unassigned">unassigned<br>{{ countSeverity(project.dependency_list.after.vuln_lists, 'Unassigned') }}</div>
+                  </div>
                 </div>
               </div>
+              <table class="dependency-table">
+                <thead>
+                  <tr>
+                    <th>Components</th>
+                    <th>Version</th>
+                    <th>Vulnerability</th>
+                    <th>Severity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="component in project.dependency_list.after.vuln_lists" :key="component.component_name" @click="navigateToThirdLink(component.info_url)" class="clickable-row">
+                    <td>{{ component.component_name }}</td>
+                    <td>{{ component.ver }}</td>
+                    <td>{{ component.vulnerability_code }}</td>
+                    <td :class="severityClass(component.severity)">{{ component.severity }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <table class="dependency-table">
-              <thead>
-                <tr>
-                  <th>Components</th>
-                  <th>Version</th>
-                  <th>Vulnerability</th>
-                  <th>Severity</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="component in project.dependency_list.after.vuln_lists" :key="component.component_name" @click="navigateTo(component.vulnerability_code)" class="clickable-row">
-                  <td>{{ component.component_name }}</td>
-                  <td>{{ component.ver }}</td>
-                  <td><a :href="component.vulnerability_code">{{ component.vulnerability_code }}</a></td>
-                  <td :class="severityClass(component.severity)">{{ component.severity }}</td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
       </div>
@@ -143,7 +148,8 @@ export default {
             vuln_lists: []
           }
         }
-      }
+      },
+      loading: true
     };
   },
   created() {
@@ -157,16 +163,46 @@ export default {
           throw new Error('Failed to fetch project data');
         }
         const data = await response.json();
-        this.project = data;
+        
+        this.project = {
+          ...data,
+          dependency_list: {
+            before: {
+              ...data.dependency_list.before,
+              vuln_lists: data.dependency_list.before.vuln_lists.map(vul => {
+                vul.info_url = this.extractThirdLink(vul.info_url);
+                return vul;
+              })
+            },
+            after: {
+              ...data.dependency_list.after,
+              vuln_lists: data.dependency_list.after.vuln_lists.map(vul => {
+                vul.info_url = this.extractThirdLink(vul.info_url);
+                return vul;
+              })
+            }
+          }
+        };
       } catch (error) {
         console.error('Error fetching project data:', error);
+      } finally {
+        this.loading = false;
       }
     },
     countSeverity(vulnLists, severity) {
       return vulnLists.filter(vul => vul.severity === severity).length;
     },
-    navigateTo(url) {
-      window.open(url, '_blank');
+    navigateToThirdLink(info_url) {
+      if (info_url) {
+        window.open(info_url, '_blank');
+      }
+    },
+    extractThirdLink(info_url) {
+      const links = info_url.split('\n').map(line => {
+        const match = line.match(/\(([^)]+)\)/);
+        return match ? match[1] : null;
+      }).filter(Boolean);
+      return links[2] || '';
     },
     severityClass(severity) {
       return {
@@ -203,6 +239,12 @@ h1:after {
   height: 2px;
   background: #2c3e50;
   margin: 10px auto 0;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.5em;
+  color: #2c3e50;
 }
 
 .tab-menu {
@@ -362,13 +404,8 @@ textarea {
   color: #2c3e50;
 }
 
-.dependency-table td a {
+.dependency-table td {
   color: #2c3e50;
-  text-decoration: none;
-}
-
-.dependency-table td a:hover {
-  text-decoration: underline;
 }
 
 .dependency-table .clickable-row:hover {
